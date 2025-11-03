@@ -1,0 +1,136 @@
+bst.php
+
+<?php
+class Node {
+    public $title;
+    public $left;
+    public $right;
+
+    public function __construct($title) {
+        $this->title = $title;
+        $this->left = null;
+        $this->right = null;
+    }
+}
+
+class MovieBST {
+    public $root;
+
+    public function __construct() {
+        $this->root = null;
+    }
+
+    public function insert($title) {
+        $newNode = new Node($title);
+
+        if ($this->root === null) {
+            $this->root = $newNode;
+            return;
+        }
+
+        $current = $this->root;
+        while (true) {
+            if (strcasecmp($title, $current->title) < 0) {
+                if ($current->left === null) {
+                    $current->left = $newNode;
+                    return;
+                }
+                $current = $current->left;
+            } else {
+                if ($current->right === null) {
+                    $current->right = $newNode;
+                    return;
+                }
+                $current = $current->right;
+            }
+        }
+    }
+
+    public function search($title) {
+        $current = $this->root;
+
+        while ($current !== null) {
+            $compare = strcasecmp($title, $current->title);
+            if ($compare === 0) {
+                return true;
+            } elseif ($compare < 0) {
+                $current = $current->left;
+            } else {
+                $current = $current->right;
+            }
+        }
+        return false;
+    }
+
+    public function inorder($node) {
+        if ($node !== null) {
+            $this->inorder($node->left);
+            echo $node->title . "<br>";
+            $this->inorder($node->right);
+        }
+    }
+
+    public function preorder($node) {
+        if ($node !== null) {
+            echo $node->title . "<br>";
+            $this->preorder($node->left);
+            $this->preorder($node->right);
+        }
+    }
+
+    public function postorder($node) {
+        if ($node !== null) {
+            $this->postorder($node->left);
+            $this->postorder($node->right);
+            echo $node->title . "<br>";
+        }
+    }
+
+    public function countNodes($node) {
+        if ($node === null) return 0;
+        return 1 + $this->countNodes($node->left) + $this->countNodes($node->right);
+    }
+}
+
+// Create the BST and insert movie titles
+$movies = new MovieBST();
+$movies->insert("Inception");
+$movies->insert("Avatar");
+$movies->insert("Titanic");
+$movies->insert("The Dark Knight");
+$movies->insert("Interstellar");
+$movies->insert("Gladiator");
+$movies->insert("Coco");
+
+// Display results
+echo "<div style='font-family: Arial, sans-serif; padding: 20px;'>";
+
+echo "<h3>🎥 Inorder Traversal (Alphabetical):</h3>";
+echo "<div style='background: white; padding: 15px; border-radius: 8px;'>";
+$movies->inorder($movies->root);
+echo "</div>";
+
+echo "<h3>🎞 Preorder Traversal:</h3>";
+echo "<div style='background: white; padding: 15px; border-radius: 8px;'>";
+$movies->preorder($movies->root);
+echo "</div>";
+
+echo "<h3>📽 Postorder Traversal:</h3>";
+echo "<div style='background: white; padding: 15px; border-radius: 8px;'>";
+$movies->postorder($movies->root);
+echo "</div>";
+
+echo "<h3>🔍 Search Results:</h3>";
+echo "<div style='background: white; padding: 15px; border-radius: 8px;'>";
+echo "Searching for 'Inception': " . ($movies->search("Inception") ? "Found!" : "Not Found") . "<br>";
+echo "Searching for 'Frozen': " . ($movies->search("Frozen") ? "Found!" : "Not Found") . "<br>";
+echo "Searching for 'Coco': " . ($movies->search("Coco") ? "Found!" : "Not Found");
+echo "</div>";
+
+echo "<h3>🎬 Total Movies in Tree:</h3>";
+echo "<div style='background: white; padding: 15px; border-radius: 8px;'>";
+echo $movies->countNodes($movies->root) . " movies total.";
+echo "</div>";
+
+echo "</div>";
+?>
